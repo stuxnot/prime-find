@@ -44,7 +44,7 @@ mod tests {
 
     #[test]
     fn test_fermat() {
-        for i in 0u8..10u8 {
+        for i in 0u8..11u8 {
             match i {
                 2 | 3 | 5 | 7 | 11 => {
                     assert_eq!(Fermat::test(&BigUint::from(i), 2), Primality::ProbablyPrime)

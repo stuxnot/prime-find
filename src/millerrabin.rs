@@ -32,8 +32,6 @@ impl ProbabilisticPrimalityTester for MillerRabin {
             r += trail;
         }
 
-        assert!(&d << r == n_decrement);
-
         let mut rng = thread_rng();
 
         'witnessLoop: for _ in 0..rounds {
@@ -56,7 +54,6 @@ impl ProbabilisticPrimalityTester for MillerRabin {
             return Primality::Composite;
         }
 
-        assert!(n % 2u8 == one_const);
         Primality::ProbablyPrime
     }
 }
@@ -67,7 +64,7 @@ mod tests {
 
     #[test]
     fn test_miller_rabin() {
-        for i in 0u8..10u8 {
+        for i in 0u8..11u8 {
             match i {
                 2 | 3 | 5 | 7 | 11 => assert_eq!(
                     MillerRabin::test(&BigUint::from(i), 2),

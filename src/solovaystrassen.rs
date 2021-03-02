@@ -73,7 +73,7 @@ impl ProbabilisticPrimalityTester for SolovayStrassen {
 
         for _ in 0..rounds {
             let a = rng.gen_biguint_range(&two_const, n);
-            // We can safely unwrap the value here, since we checked earlier that n is odd.
+            // Safety: We can unwrap the value here, since we checked earlier that n is odd.
             let x = jacobi_symbol(&a, n).unwrap();
 
             let x = match x.signum() {
@@ -122,7 +122,7 @@ mod tests {
 
     #[test]
     fn test_solovay_strassen() {
-        for i in 0u8..10u8 {
+        for i in 0u8..11u8 {
             match i {
                 2 | 3 | 5 | 7 | 11 => assert_eq!(
                     SolovayStrassen::test(&BigUint::from(i), 2),
