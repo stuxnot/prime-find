@@ -53,40 +53,4 @@ mod tests {
             assert_eq!(mr, f);
         }
     }
-
-    #[test]
-    fn find_2048_bit_prime() {
-        let mut rng = thread_rng();
-
-        let mut count = 0u32;
-        let mut passed_trial = 0u32;
-
-        let mut prime;
-        loop {
-            count += 1;
-
-            prime = rng.gen_biguint(2048);
-            prime.set_bit(0, true);
-
-            if prime_test_trial(&prime) == Primality::Composite {
-                continue;
-            }
-
-            passed_trial += 1;
-
-            if Fermat::test(&prime, 2) == Primality::ProbablyPrime {
-                if MillerRabin::test(&prime, 3) == Primality::ProbablyPrime {
-                    break;
-                }
-            }
-        }
-
-        println!(
-            "Tested {} numbers. {} % passed the trial",
-            count,
-            passed_trial * 100 / count
-        );
-
-        println!("Prime:\n {}", prime);
-    }
 }
