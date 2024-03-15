@@ -12,10 +12,14 @@ fn gcd(mut u: BigUint, mut v: BigUint) -> BigUint {
 
     // SAFETY:
     // Since u and v are not 0, we can unwrap safely.
-    let exponent_on_two = (&u | &v).trailing_zeros().unwrap();
+    let u_divisor_exponent_on_two = u.trailing_zeros().unwrap();
+    let v_divisor_exponent_on_two = v.trailing_zeros().unwrap();
 
-    u >>= u.trailing_zeros().unwrap();
-    v >>= v.trailing_zeros().unwrap();
+    let shared_exponent_on_two =
+        std::cmp::min(u_divisor_exponent_on_two, v_divisor_exponent_on_two);
+
+    u >>= u_divisor_exponent_on_two;
+    v >>= v_divisor_exponent_on_two;
 
     while u != v {
         if u < v {
@@ -23,10 +27,12 @@ fn gcd(mut u: BigUint, mut v: BigUint) -> BigUint {
         }
 
         u -= &v;
+        // SAFETY:
+        // We have ensured that u > v, thus u - v > 0.
         u >>= u.trailing_zeros().unwrap();
     }
 
-    u << exponent_on_two
+    u << shared_exponent_on_two
 }
 
 /// Tests a number `n` for primality by calculating the gcd of products of small primes
