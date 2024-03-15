@@ -1,29 +1,37 @@
 use num_bigint::{BigUint, RandBigInt};
-use rand::thread_rng;
+use rand::rngs::OsRng;
 use std::env;
 
-use prime_find::{prime_test_trial, Fermat, MillerRabin, Primality, ProbabilisticPrimalityTester};
+use prime_find::{prime_test_trial, MillerRabin, Primality, ProbabilisticPrimalityTester};
 
 fn find_prime(bits: u64) -> BigUint {
-    let mut rng = thread_rng();
+    let mut rng = OsRng::default();
 
-    let mut prime;
     loop {
-        prime = rng.gen_biguint(bits);
+        let mut prime = rng.gen_biguint(bits);
         prime.set_bit(0, true);
 
         if prime_test_trial(&prime) == Some(Primality::Composite) {
             continue;
         }
 
-        if Fermat::test(&prime, 2) == Primality::ProbablyPrime {
-            if MillerRabin::test(&prime, 3) == Primality::ProbablyPrime {
-                break;
-            }
+        // According to "Average Case Error Estimates For The String Porbable Prime Test"
+        // by Damgard, Landrock, and Pomerance, 10 rounds should give enough certainty
+        // for numbers with more than 400 bits (see table 1). The other numbers are currently
+        // not exactly calculated, but since the test is extremely fast for small numbers
+        // we can just use a large number of rounds.
+        let rounds = match bits {
+            0..=100 => 80,
+            101..=400 => 40,
+            _ => 10,
+        };
+
+        if MillerRabin::test(&prime, rounds) == Primality::ProbablyPrime {
+            return prime;
         }
     }
-    prime
 }
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
