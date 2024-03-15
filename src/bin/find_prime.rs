@@ -5,10 +5,8 @@ use std::env;
 use prime_find::{prime_test_trial, MillerRabin, Primality, ProbabilisticPrimalityTester};
 
 fn find_prime(bits: u64) -> BigUint {
-    let mut rng = OsRng::default();
-
     loop {
-        let mut prime = rng.gen_biguint(bits);
+        let mut prime = OsRng.gen_biguint(bits);
         prime.set_bit(0, true);
 
         if prime_test_trial(&prime) == Some(Primality::Composite) {

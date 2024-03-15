@@ -13,7 +13,7 @@ fn jacobi_symbol(a: BigUint, n: BigUint) -> Option<i8> {
     let mut a = a;
     let mut n = n;
 
-    a = a % &n;
+    a %= &n;
 
     let mut t = 1;
 
@@ -35,7 +35,7 @@ fn jacobi_symbol(a: BigUint, n: BigUint) -> Option<i8> {
             t = -t;
         }
 
-        a = a % &n;
+        a &= &n;
     }
 
     if n == 1u8.into() {
