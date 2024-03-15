@@ -9,10 +9,10 @@ impl ProbabilisticPrimalityTester for MillerRabin {
     fn test(n: &BigUint, rounds: u32) -> Primality {
         let n_decrement: BigUint = n - 1u8;
 
-        // SAFETY:
-        // n > 3, thus n - 1 > 0, which ensures this is always Some.
-        let r = n_decrement.trailing_zeros().unwrap();
-        let d = n_decrement.clone() >> r;
+        let r = n_decrement
+            .trailing_zeros()
+            .expect("n is greater than three");
+        let d = &n_decrement >> r;
 
         let mut rng = thread_rng();
 
