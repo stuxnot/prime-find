@@ -40,7 +40,7 @@ fn main() {
 
     if let Ok(bits) = args[1].parse() {
         println!("Searching for prime with {bits} bits:");
-        println!("Found:\n{}", find_prime(bits));
+        println!("Found:\n{:x}", find_prime(bits));
     } else {
         println!("Could not parse number of bits.");
     }
