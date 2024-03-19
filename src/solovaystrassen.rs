@@ -35,7 +35,7 @@ fn jacobi_symbol(a: BigUint, n: BigUint) -> Option<i8> {
             t = -t;
         }
 
-        a &= &n;
+        a %= &n;
     }
 
     if n == 1u8.into() {
