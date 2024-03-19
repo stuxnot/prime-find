@@ -4,34 +4,32 @@ use super::{Primality, ProbabilisticPrimalityTester};
 
 pub struct SolovayStrassen;
 
-fn jacobi_symbol(a: BigUint, n: BigUint) -> Option<i8> {
+fn bitand(a: &BigUint, b: u64) -> u64 {
+    let low_dword = a.iter_u64_digits().next().unwrap_or(0);
+    low_dword & b
+}
+
+fn jacobi_symbol(mut a: BigUint, mut n: BigUint) -> Option<i8> {
     // The LSB must be one.
     if !n.bit(0) {
         return None;
     }
 
-    let mut a = a;
-    let mut n = n;
-
     a %= &n;
 
     let mut t = 1;
+    while a != 0u64.into() {
+        let trailing = a.trailing_zeros().expect("a != 0");
+        a >>= trailing;
 
-    while a != 0u8.into() {
-        if let Some(num) = a.trailing_zeros() {
-            for _ in 0..num {
-                a >>= 1;
-                let r: BigUint = &n % 8u8;
-
-                if r == 3u8.into() || r == 5u8.into() {
-                    t = -t;
-                }
-            }
+        let r: u64 = bitand(&n, 7);
+        if (r == 3 || r == 5) && trailing & 1 == 1 {
+            t = -t;
         }
 
         std::mem::swap(&mut a, &mut n);
 
-        if &a % 4u8 == 3u8.into() && &n % 4u8 == 3u8.into() {
+        if bitand(&a, 3) == 3 && bitand(&n, 3) == 3 {
             t = -t;
         }
 
